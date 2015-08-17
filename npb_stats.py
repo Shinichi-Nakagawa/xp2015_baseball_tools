@@ -31,7 +31,7 @@ class NpbStats(object):
         _stats[self.config['batter'][key_ops]] = ops
         # Adam dunn
         key_dunn = NpbStats.KEY_FORMAT.format(index=26)
-        dunn = round((float(stats['hr']) + float(stats['bb']) + float(stats['so'])) / float(stats['atbat']) * 100, 1)
+        dunn = round((float(stats['hr']) + float(stats['bb']) + float(stats['so'])) / float(stats['pa']) * 100, 1)
         _stats[self.config['batter'][key_dunn]] = dunn
         return _stats
 
