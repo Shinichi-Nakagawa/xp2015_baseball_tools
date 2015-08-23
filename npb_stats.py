@@ -22,6 +22,10 @@ class NpbStats(NpbData):
         key_dunn = NpbStats.KEY_FORMAT.format(index=26)
         dunn = round((float(row['hr']) + float(row['bb']) + float(row['so'])) / float(row['pa']) * 100, 1)
         _stats[self.config['batter'][key_dunn]] = dunn
+        # 選手名(チーム名)
+        key_name = NpbStats.KEY_FORMAT.format(index=27)
+        name = '{name}({team})'.format(name=row['name'].replace('　', ''), team=row['team'])
+        _stats[self.config['batter'][key_name]] = name
         return _stats
 
     def get(self, ):

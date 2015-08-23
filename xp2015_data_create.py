@@ -4,6 +4,7 @@
 __author__ = 'Shinichi Nakagawa'
 
 from npb_standings import NpbStandings
+from npb_stats import NpbStats
 
 if __name__ == '__main__':
     st = NpbStandings()
@@ -23,4 +24,23 @@ if __name__ == '__main__':
         columns=['team', 'py_win', 'py_lose', 'rs', 'ra', 'run_diff', 'py_expectation', 'rank'],
         sort_key='py_expectation',
         ascending=False,
+    )
+
+    bt = NpbStats()
+    batters = bt.get()
+    # OPSランキング
+    bt.excel(
+        batters,
+        'npb_batter_ops_{league}.xlsx',
+        columns=['name_and_team', 'ops', 'obp', 'slg'],
+        sort_key='ops',
+        ascending=False
+    )
+    # アダム・ダン率ランキング
+    bt.excel(
+        batters,
+        'npb_batter_dunn_{league}.xlsx',
+        columns=['name_and_team', 'dunn', 'hr', 'bb', 'so'],
+        sort_key='dunn',
+        ascending=False
     )
