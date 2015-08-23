@@ -54,13 +54,20 @@ class NpbData(object):
                 scraping_dict[league].append(self.get_row(row))
         return scraping_dict
 
-    def excel(self, scraping_dict, filename):
+    def excel(self, scraping_dict, filename, sheet_name='stats', columns=None, sort_key='rank', ascending=True):
         """
         Excel出力
         :param scraping_dict: スクレイピング結果
         :param filename: book名
+        :param sheet_name: sheet名
+        :param columns: カラム名
+        :param sort_key: ソート用のキー
+        :param ascending: ソート順(デフォルトは昇順)
         :return: None
         """
         for k, v in scraping_dict.items():
             df = pd.DataFrame(v)
-            df.to_excel(filename.format(league=k), 'batter_stats')
+            if columns is None:
+                df.to_excel(filename.format(league=k), sheet_name)
+            else:
+                df[columns].sort(sort_key, ascending=ascending).to_excel(filename.format(league=k), sheet_name)

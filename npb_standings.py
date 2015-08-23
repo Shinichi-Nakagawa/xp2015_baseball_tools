@@ -29,6 +29,10 @@ class NpbStandings(NpbData):
         :return: dict
         """
         team_stats = row
+        # 順位を書き換え('位'を抜く)
+        key_rank = NpbStandings.KEY_FORMAT.format(index=0)
+        rank = int(row[self.config['standings'][key_rank]].replace('位', ''))
+        team_stats[self.config['standings'][key_rank]] = rank
         # ピタゴラス勝率を追加
         key_py_ex = NpbStandings.KEY_FORMAT.format(index=15)
         py_ex = NpbStandings.calc_pythagorean_expectation(float(row['rs']), float(row['ra']))
@@ -41,6 +45,10 @@ class NpbStandings(NpbData):
         key_py_lose = NpbStandings.KEY_FORMAT.format(index=17)
         py_lose = int(row['game']) - py_win
         team_stats[self.config['standings'][key_py_lose]] = py_lose
+        # 得失点差
+        key_run_diff = NpbStandings.KEY_FORMAT.format(index=18)
+        run_diff = int(row['rs']) - int(row['ra'])
+        team_stats[self.config['standings'][key_run_diff]] = run_diff
         return team_stats
 
     def get(self, ):
