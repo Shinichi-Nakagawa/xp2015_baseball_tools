@@ -3,23 +3,12 @@
 
 __author__ = 'Shinichi Nakagawa'
 
-import urllib.request
-import pandas as pd
-from bs4 import BeautifulSoup
-from configparser import ConfigParser
-from collections import OrderedDict
+from npb_data import NpbData
 
-
-class NpbStandings(object):
+class NpbStandings(NpbData):
 
     # ピタゴラス勝率のべき乗
     PYTHAGORIAN_POWER = 2.0
-    # 出力結果のKey(confing.ini)
-    KEY_FORMAT = 'key_{index}'
-
-    def __init__(self):
-        self.config = ConfigParser()
-        self.config.read("config.ini")
 
     @classmethod
     def calc_pythagorean_expectation(cls, r, ra):
@@ -33,24 +22,24 @@ class NpbStandings(object):
         ra_power = ra ** NpbStandings.PYTHAGORIAN_POWER
         return round(r_power / (r_power + ra_power), 3)
 
-    def _team_stats(self, stats):
+    def get_row(self, row):
         """
-        Team Stats
-        :param row: Team Stats
-        :return: list(team_stats + SABR)
+        行データ出力
+        :param row: スクレイピングした結果の行データ
+        :return: dict
         """
-        team_stats = stats
+        team_stats = row
         # ピタゴラス勝率を追加
         key_py_ex = NpbStandings.KEY_FORMAT.format(index=15)
-        py_ex = NpbStandings.calc_pythagorean_expectation(float(stats['rs']), float(stats['ra']))
+        py_ex = NpbStandings.calc_pythagorean_expectation(float(row['rs']), float(row['ra']))
         team_stats[self.config['standings'][key_py_ex]] = py_ex
         # ピタゴラス勝利数
         key_py_win = NpbStandings.KEY_FORMAT.format(index=16)
-        py_win = int(round(float(stats['game']) * py_ex, 0))
+        py_win = int(round(float(row['game']) * py_ex, 0))
         team_stats[self.config['standings'][key_py_win]] = py_win
         # ピタゴラス敗戦数
         key_py_lose = NpbStandings.KEY_FORMAT.format(index=17)
-        py_lose = int(stats['game']) - py_win
+        py_lose = int(row['game']) - py_win
         team_stats[self.config['standings'][key_py_lose]] = py_lose
         return team_stats
 
@@ -59,33 +48,10 @@ class NpbStandings(object):
         順位表を取得して吐き出す
         return : dict
         """
-        dic_standings = {
-            'central': [],
-            'pacific': [],
-        }
-        for league in dic_standings.keys():
-            html = urllib.request.urlopen(self.config[league]['standings_url'])
-            soup = BeautifulSoup(html)
-            table = soup.find('table', class_='NpbPlSt yjM')
-            for tr in table.find_all('tr'):
-                row = OrderedDict()
-                for i, td in enumerate(tr.find_all('td')):
-                    key = NpbStandings.KEY_FORMAT.format(index=i)
-                    row[self.config['standings'][key]] = td.text
-                if len(row) < 15:
-                    continue
-                dic_standings[league].append(self._team_stats(row))
-        return dic_standings
-
-    def excel(self, standings, filename=r'npb_standings_{league}.xlsx'):
-        for k, v in standings.items():
-            df = pd.DataFrame(v)
-            df.to_excel(filename.format(league=k), 'standings')
+        return self.get_yahoo_japan_baseball('standings_url', 'NpbPlSt yjM', 'standings', 15)
 
 
 if __name__ == '__main__':
-    from pprint import pprint
     st = NpbStandings()
     standings = st.get()
-    #pprint(standings)
-    st.excel(standings)
+    st.excel(standings, filename=r'npb_standings_{league}.xlsx')
