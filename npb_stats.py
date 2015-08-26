@@ -13,19 +13,25 @@ class NpbStats(NpbData):
         :param row: スクレイピングした結果の行データ
         :return: dict
         """
+        config_batter = self.config['batter']
         _stats = row
         # OPS
-        key_ops = NpbStats.KEY_FORMAT.format(index=25)
-        ops = round(float(row['obp']) + float(row['slg']), 3)
-        _stats[self.config['batter'][key_ops]] = ops
+        key_ops, type_ops = NpbData.get_column_and_data_type(
+            config_batter[NpbStats.KEY_FORMAT.format(index=25)]
+        )
+        _stats[key_ops] = round(row['obp'] + row['slg'], 3)
+
         # Adam dunn
-        key_dunn = NpbStats.KEY_FORMAT.format(index=26)
-        dunn = round((float(row['hr']) + float(row['bb']) + float(row['so'])) / float(row['pa']) * 100, 1)
-        _stats[self.config['batter'][key_dunn]] = dunn
+        key_dunn, type_dunn = NpbData.get_column_and_data_type(
+            config_batter[NpbStats.KEY_FORMAT.format(index=26)]
+        )
+        _stats[key_dunn] = round((float(row['hr']) + float(row['bb']) + float(row['so'])) / float(row['pa']) * 100, 1)
+
         # 選手名(チーム名)
-        key_name = NpbStats.KEY_FORMAT.format(index=27)
-        name = '{name}({team})'.format(name=row['name'].replace('　', ''), team=row['team'])
-        _stats[self.config['batter'][key_name]] = name
+        key_name, type_name = NpbData.get_column_and_data_type(
+            config_batter[NpbStats.KEY_FORMAT.format(index=27)]
+        )
+        _stats[key_name] = '{name}({team})'.format(name=row['name'].replace('　', ''), team=row['team'])
         return _stats
 
     def get(self, ):

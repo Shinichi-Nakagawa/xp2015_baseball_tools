@@ -27,6 +27,30 @@ class NpbData(object):
         # サブクラスで実装
         pass
 
+    @classmethod
+    def get_column_and_data_type(cls, config_value):
+        """
+        カラム名とデータ型を取得
+        :param config_value: config.iniのパラメータ
+        :return: column, data_type
+        """
+        return config_value.split(',')
+
+    @classmethod
+    def get_value(cls, data_type, text):
+        """
+        データ型に合わせて置換
+        :param data_type: data type
+        :param text: value text
+        :return: (data type)text
+        """
+        if data_type is 'i':
+            return int(text)
+        elif data_type is 'f':
+            return float(text)
+
+        return text
+
     def get_yahoo_japan_baseball(self, config_url, table_class, config_path, column_size):
         """
         Yahoo Japan Baseballをスクレイピング
@@ -46,11 +70,12 @@ class NpbData(object):
             table = soup.find('table', class_=table_class)
             for tr in table.find_all('tr'):
                 row = OrderedDict()
+                if len(tr.find_all('td')) < column_size:
+                    continue
                 for i, td in enumerate(tr.find_all('td')):
                     key = NpbData.KEY_FORMAT.format(index=i)
-                    row[self.config[config_path][key]] = td.text
-                if len(row) < column_size:
-                    continue
+                    column, data_type = NpbData.get_column_and_data_type(self.config[config_path][key])
+                    row[column] = NpbData.get_value(data_type, td.text)
                 scraping_dict[league].append(self.get_row(row))
         return scraping_dict
 

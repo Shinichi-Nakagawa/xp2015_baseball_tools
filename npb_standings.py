@@ -28,27 +28,37 @@ class NpbStandings(NpbData):
         :param row: スクレイピングした結果の行データ
         :return: dict
         """
+        config_standings = self.config['standings']
         team_stats = row
         # 順位を書き換え('位'を抜く)
-        key_rank = NpbStandings.KEY_FORMAT.format(index=0)
-        rank = int(row[self.config['standings'][key_rank]].replace('位', ''))
-        team_stats[self.config['standings'][key_rank]] = rank
+        key_rank, type_rank = NpbData.get_column_and_data_type(
+            config_standings[NpbStandings.KEY_FORMAT.format(index=0)]
+        )
+        team_stats[key_rank] = NpbData.get_value(type_rank, row[key_rank].replace('位', ''))
+
         # ピタゴラス勝率を追加
-        key_py_ex = NpbStandings.KEY_FORMAT.format(index=15)
-        py_ex = NpbStandings.calc_pythagorean_expectation(float(row['rs']), float(row['ra']))
-        team_stats[self.config['standings'][key_py_ex]] = py_ex
+        key_py_ex, type_py_ex = NpbData.get_column_and_data_type(
+            config_standings[NpbStandings.KEY_FORMAT.format(index=15)]
+        )
+        team_stats[key_py_ex] = NpbStandings.calc_pythagorean_expectation(float(row['rs']), float(row['ra']))
+
         # ピタゴラス勝利数
-        key_py_win = NpbStandings.KEY_FORMAT.format(index=16)
-        py_win = int(round(float(row['game']) * py_ex, 0))
-        team_stats[self.config['standings'][key_py_win]] = py_win
+        key_py_win, type_py_win = NpbData.get_column_and_data_type(
+            config_standings[NpbStandings.KEY_FORMAT.format(index=16)]
+        )
+        team_stats[key_py_win] = NpbData.get_value(type_py_win, round(float(row['game']) * team_stats[key_py_ex], 0))
+
         # ピタゴラス敗戦数
-        key_py_lose = NpbStandings.KEY_FORMAT.format(index=17)
-        py_lose = int(row['game']) - py_win
-        team_stats[self.config['standings'][key_py_lose]] = py_lose
+        key_py_lose, type_py_lose = NpbData.get_column_and_data_type(
+            config_standings[NpbStandings.KEY_FORMAT.format(index=17)]
+        )
+        team_stats[key_py_lose] = row['game'] - team_stats[key_py_win]
+
         # 得失点差
-        key_run_diff = NpbStandings.KEY_FORMAT.format(index=18)
-        run_diff = int(row['rs']) - int(row['ra'])
-        team_stats[self.config['standings'][key_run_diff]] = run_diff
+        key_run_diff, type_run_diff = NpbData.get_column_and_data_type(
+            config_standings[NpbStandings.KEY_FORMAT.format(index=18)]
+        )
+        team_stats[key_run_diff] = row['rs'] - row['ra']
         return team_stats
 
     def get(self, ):
