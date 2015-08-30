@@ -12,7 +12,7 @@ if __name__ == '__main__':
     # 順位表
     st.excel(
         standings,
-        'npb_ranking_{league}.xlsx',
+        'xp_npb_ranking.xlsx',
         columns=['rank', 'team', 'win', 'lose', 'rs', 'ra', 'run_diff', 'win_p'],
         sort_key='rank',
         ascending=True,
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     # ピタゴラス勝率順
     st.excel(
         standings,
-        'npb_py_ranking_{league}.xlsx',
+        'xp_npb_py_ranking.xlsx',
         columns=['team', 'py_win', 'py_lose', 'rs', 'ra', 'run_diff', 'py_expectation', 'rank'],
         sort_key='py_expectation',
         ascending=False,
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     # OPSランキング
     bt.excel(
         batters,
-        'npb_batter_ops_{league}.xlsx',
+        'xp_npb_batter_ops.xlsx',
         columns=['name_and_team', 'ops', 'obp', 'slg'],
         sort_key='ops',
         ascending=False
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     # アダム・ダン率ランキング
     bt.excel(
         batters,
-        'npb_batter_dunn_{league}.xlsx',
+        'xp_npb_batter_dunn.xlsx',
         columns=['name_and_team', 'dunn', 'hr', 'bb', 'so'],
         sort_key='dunn',
         ascending=False

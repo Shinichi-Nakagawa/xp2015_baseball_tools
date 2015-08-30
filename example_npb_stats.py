@@ -18,7 +18,7 @@ if __name__ == '__main__':
     # ピタゴラス勝率,ピタゴラス勝利,ピタゴラス敗北(試合数-ピタゴラス勝利),得点,失点,得失点差
     st.excel(
         standings,
-        'npb_py_ranking_{league}.xlsx',
+        'npb_py_ranking.xlsx',
         columns=['team', 'py_expectation', 'py_win', 'py_lose', 'rs', 'ra', 'run_diff'],
         sort_key='py_expectation',
         ascending=False,
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     stats_batter = batter.get()
     batter.excel(
         stats_batter,
-        'npb_batter_stats_sabr{league}.xlsx',
+        'npb_batter_stats_sabr.xlsx',
         columns=['name_and_team', 'ba', 'hr', 'rbi', 'obp', 'slg', 'ops', 'iso'],
         sort_key='ba',
         ascending=False,
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     stats_pitcher = pitcher.get()
     pitcher.excel(
         stats_pitcher,
-        'npb_pitcher_stats_sabr{league}.xlsx',
+        'npb_pitcher_stats_sabr.xlsx',
         columns=['name_and_team', 'era', 'so', 'win', 'lose', 'k9', 'bb9', 'hr9'],
         sort_key='era',
         ascending=True,

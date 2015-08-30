@@ -72,4 +72,4 @@ class NpbStandings(NpbData):
 if __name__ == '__main__':
     st = NpbStandings()
     standings = st.get()
-    st.excel(standings, filename=r'npb_standings_{league}.xlsx')
+    st.excel(standings, filename=r'npb_standings.xlsx')

@@ -59,4 +59,4 @@ class NpbBatterStats(NpbData):
 if __name__ == '__main__':
     st = NpbBatterStats()
     stats = st.get()
-    st.excel(stats, filename=r'npb_batter_stats_{league}.xlsx')
+    st.excel(stats, filename=r'npb_batter_stats.xlsx')
