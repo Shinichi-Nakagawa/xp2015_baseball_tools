@@ -17,13 +17,20 @@ class NpbPitcherStats(NpbData):
         config_pitcher = self.config['pitcher']
         _stats = row
         # イニングを計算し直す(分数表記から小数表記に)
+        key_ip, type_ip = NpbData.get_column_and_data_type(
+            config_pitcher[NpbPitcherStats.KEY_FORMAT.format(index=29)]
+        )
         ips = row['ip'].split('\xa0')
         if len(ips) == 1:
-            _stats['ip'] = float(ips[0])
+            _stats[key_ip] = float(ips[0])
         else:
-            # 1/3 = .1, 2/3 = .2
-            _ip = ips[0] + '.' + ips[1].replace('/3', '')
-            _stats['ip'] = float(_ip)
+            # 1/3 = 0.333, 2/3 = 0.666
+            if ips[1] == '1/3':
+                _stats[key_ip] = float(ips[0]) + 0.333
+            elif ips[1] == '2/3':
+                _stats[key_ip] = float(ips[0]) + 0.666
+            else:
+                raise Exception('イレギュラーなイニング数:{ip}'.format(ip=row['ip']))
 
         # 選手名(チーム名)
         key_name, type_name = NpbData.get_column_and_data_type(
@@ -35,19 +42,19 @@ class NpbPitcherStats(NpbData):
         key_bb9, type_bb9 = NpbData.get_column_and_data_type(
             config_pitcher[NpbPitcherStats.KEY_FORMAT.format(index=25)]
         )
-        _stats[key_bb9] = Stats.bb9(row['bb'], _stats['ip'])
+        _stats[key_bb9] = Stats.bb9(row['bb'], _stats['calc_ip'])
 
         # SO/9
         key_so9, type_so9 = NpbData.get_column_and_data_type(
             config_pitcher[NpbPitcherStats.KEY_FORMAT.format(index=26)]
         )
-        _stats[key_so9] = Stats.so9(row['so'], _stats['ip'])
+        _stats[key_so9] = Stats.so9(row['so'], _stats['calc_ip'])
 
         # HR/9
         key_hr9, type_hr9 = NpbData.get_column_and_data_type(
             config_pitcher[NpbPitcherStats.KEY_FORMAT.format(index=27)]
         )
-        _stats[key_hr9] = Stats.so9(row['hr'], _stats['ip'])
+        _stats[key_hr9] = Stats.so9(row['hr'], _stats['calc_ip'])
 
         return _stats
 

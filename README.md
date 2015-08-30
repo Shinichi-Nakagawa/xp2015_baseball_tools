@@ -30,5 +30,12 @@ XP祭り2015「アジャイル脳によく効く野球のハナシ」に使っ�
     
     - 個人成績（打者）
         
-        python npb_stats.py
+        python npb_batter_stats.py
+
+    - 個人成績（投手）
+        
+        python npb_pitcher_stats.py
+        
+    - 書籍「野球×統計は最強のバッテリーである」の指標を再現
     
+        python example_npb_stats.py
