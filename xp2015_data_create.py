@@ -4,7 +4,7 @@
 __author__ = 'Shinichi Nakagawa'
 
 from npb_standings import NpbStandings
-from npb_stats import NpbStats
+from npb_batter_stats import NpbBatterStats
 
 if __name__ == '__main__':
     st = NpbStandings()
@@ -26,7 +26,7 @@ if __name__ == '__main__':
         ascending=False,
     )
 
-    bt = NpbStats()
+    bt = NpbBatterStats()
     batters = bt.get()
     # OPSランキング
     bt.excel(
