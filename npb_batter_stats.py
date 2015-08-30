@@ -44,9 +44,7 @@ class NpbBatterStats(NpbData):
         key_babip, type_babip = NpbData.get_column_and_data_type(
             config_batter[NpbBatterStats.KEY_FORMAT.format(index=29)]
         )
-        # シングルヒットの数を数えた後、BABIPを算出
-        _single_hit = Stats.single(row['h'], row['hr'], row['_2b'], row['_3b'])
-        _stats[key_babip] = Stats.babip(_single_hit, row['hr'], row['atbat'], row['so'], row['sf'])
+        _stats[key_babip] = Stats.babip(row['h'], row['hr'], row['atbat'], row['so'], row['sf'])
 
         return _stats
 
