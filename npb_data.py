@@ -8,15 +8,19 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from configparser import ConfigParser
 from collections import OrderedDict
-
+from datetime import datetime as dt
 
 class NpbData(object):
     # 出力結果のKey(confing.ini)
     KEY_FORMAT = 'key_{index}'
+    DATETIME_FORMAT = '%Y%m%d_%H%M%S'
 
     def __init__(self, config_file='config.ini'):
         self.config = ConfigParser()
         self.config.read(config_file)
+        self.output_path = self.config['config']['output_path']
+        self.extension = self.config['config']['extension']
+        self.now_time = dt.now().strftime(NpbData.DATETIME_FORMAT)
 
     def get_row(self, row):
         """
@@ -79,7 +83,7 @@ class NpbData(object):
                 scraping_dict[league].append(self.get_row(row))
         return scraping_dict
 
-    def excel(self, scraping_dict, filename, columns=None, sort_key='rank', ascending=True, output_dir='./output'):
+    def excel(self, scraping_dict, filename, columns=None, sort_key='rank', ascending=True, output_dir=None):
         """
         Excel出力(league毎にシートを出力)
         :param scraping_dict: スクレイピング結果
@@ -90,6 +94,9 @@ class NpbData(object):
         :param output_dir: 出力先ディレクトリ
         :return: None
         """
+        if output_dir is None:
+            output_dir = self.output_path
+
         writer = pd.ExcelWriter('/'.join([output_dir, filename]))
         for k, v in scraping_dict.items():
             df = pd.DataFrame(v)
@@ -97,4 +104,5 @@ class NpbData(object):
                 df.to_excel(writer, k)
             else:
                 df[columns].sort(sort_key, ascending=ascending).to_excel(writer, k)
+
         writer.save()

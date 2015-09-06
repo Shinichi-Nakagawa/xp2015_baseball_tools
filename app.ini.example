@@ -1,0 +1,11 @@
+# AWS
+[aws]
+access_key=your access key
+secret_access_key=your secret key
+user=user name
+user_password=user password
+user_console=console url
+region=ap-northeast-1
+
+[baseball_report]
+bucket_name=npb-baseball-report
