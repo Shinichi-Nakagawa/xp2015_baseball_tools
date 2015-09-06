@@ -66,3 +66,6 @@ target/
 # Excel
 
 *.xls*
+
+# configuration
+app.ini

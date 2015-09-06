@@ -2,10 +2,6 @@
 # -*- coding: utf-8 -*-
 
 __author__ = 'Shinichi Nakagawa'
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-__author__ = 'Shinichi Nakagawa'
 
 from npb_standings import NpbStandings
 from npb_batter_stats import NpbBatterStats
