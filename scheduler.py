@@ -102,7 +102,7 @@ def main():
 
     # crontab settings
     job_settings = [
-        JobSettings(CronTab("45 23 * * *"), xp2015_data_create),
+        JobSettings(CronTab("00 22 * * *"), xp2015_data_create),
     ]
 
     # multi process running
