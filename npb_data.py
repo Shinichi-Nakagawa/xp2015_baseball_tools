@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 from configparser import ConfigParser
 from collections import OrderedDict
 from datetime import datetime as dt
+import time
+from datetime import timezone, timedelta
 
 class NpbData(object):
     # 出力結果のKey(confing.ini)
@@ -20,7 +22,18 @@ class NpbData(object):
         self.config.read(config_file)
         self.output_path = self.config['config']['output_path']
         self.extension = self.config['config']['extension']
-        self.now_time = dt.now().strftime(NpbData.DATETIME_FORMAT)
+        loc = dt.fromtimestamp(time.time(), self._get_timezone())
+        self.now_time = loc.strftime(NpbData.DATETIME_FORMAT)
+
+    def _get_timezone(self):
+        """
+        タイムゾーン取得
+        :return: now time
+        """
+        return timezone(
+            timedelta(hours=+int(self.config['config']['hours'])),
+            self.config['config']['timezone']
+        )
 
     def get_row(self, row):
         """
