@@ -7,8 +7,9 @@ from crontab import CronTab
 from datetime import datetime, timedelta
 import logging
 import math
-from multiprocessing import Pool
 import time
+import functools
+from multiprocessing import Pool
 from xp2015_data_create import Xp2015DataCreate
 
 
@@ -17,13 +18,11 @@ class JobSettings(object):
     出力設定
     """
 
-    def __init__(self, crontab, job):
+    def __init__(self, crontab):
         """
         :param crontab: crontab.CronTab
-        :param job: function
         """
         self._crontab = crontab
-        self.job = job
 
     def schedule(self):
         """
@@ -48,28 +47,35 @@ class JobController(object):
     """
 
     @classmethod
-    def run(cls, job_settings):
+    def run(cls, crontab):
         """
         処理実行
-        :param job_settings: JobSetings
+        :param crontab: job schedule
         """
+        def receive_func(job):
+            @functools.wraps(job)
+            def wrapper():
 
-        logging.info("->- Process Start")
-        while True:
-            try:
-                logging.info(
-                    "-?- next running\tschedule:%s" %
-                    job_settings.schedule().strftime("%Y-%m-%d %H:%M:%S")
-                )
-                time.sleep(job_settings.interval())
-                logging.info("->- Job Start")
-                job_settings.job()
-                logging.info("-<- Job Done")
-            except KeyboardInterrupt:
-                break
-        logging.info("-<- Process Done.")
+                job_settings = JobSettings(CronTab(crontab))
+                logging.info("->- Process Start")
+                while True:
+                    try:
+                        logging.info(
+                            "-?- next running\tschedule:%s" %
+                            job_settings.schedule().strftime("%Y-%m-%d %H:%M:%S")
+                        )
+                        time.sleep(job_settings.interval())
+                        logging.info("->- Job Start")
+                        job()
+                        logging.info("-<- Job Done")
+                    except KeyboardInterrupt:
+                        break
+                logging.info("-<- Process Done.")
+            return wrapper
+        return receive_func
 
 
+@JobController.run("00 22 * * *")
 def xp2015_data_create():
     """
     XP祭り2015用データ作成
@@ -101,14 +107,15 @@ def main():
     )
 
     # crontab settings
-    job_settings = [
-        JobSettings(CronTab("00 22 * * *"), xp2015_data_create),
-    ]
+    jobs = [xp2015_data_create, ]
 
     # multi process running
-    p = Pool(len(job_settings))
+    p = Pool(len(jobs))
     try:
-        p.map(JobController.run, job_settings)
+        for job in jobs:
+            p.apply_async(job)
+        p.close()
+        p.join()
     except KeyboardInterrupt:
         pass
 
