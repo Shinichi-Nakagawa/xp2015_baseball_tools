@@ -3,10 +3,10 @@
 
 __author__ = 'Shinichi Nakagawa'
 
-from npb_data import NpbData
+from npb.data_source import DataSource
 from baseball.stats import Stats
 
-class NpbPitcherStats(NpbData):
+class PitcherStats(DataSource):
 
     def get_row(self, row):
         """
@@ -17,8 +17,8 @@ class NpbPitcherStats(NpbData):
         config_pitcher = self.config['pitcher']
         _stats = row
         # イニングを計算し直す(分数表記から小数表記に)
-        key_ip, type_ip = NpbData.get_column_and_data_type(
-            config_pitcher[NpbPitcherStats.KEY_FORMAT.format(index=29)]
+        key_ip, type_ip = DataSource.get_column_and_data_type(
+            config_pitcher[PitcherStats.KEY_FORMAT.format(index=29)]
         )
         ips = row['ip'].split('\xa0')
         if len(ips) == 1:
@@ -33,26 +33,26 @@ class NpbPitcherStats(NpbData):
                 raise Exception('イレギュラーなイニング数:{ip}'.format(ip=row['ip']))
 
         # 選手名(チーム名)
-        key_name, type_name = NpbData.get_column_and_data_type(
-            config_pitcher[NpbPitcherStats.KEY_FORMAT.format(index=24)]
+        key_name, type_name = DataSource.get_column_and_data_type(
+            config_pitcher[PitcherStats.KEY_FORMAT.format(index=24)]
         )
         _stats[key_name] = '{name}({team})'.format(name=row['name'].replace('　', ''), team=row['team'])
 
         # BB/9
-        key_bb9, type_bb9 = NpbData.get_column_and_data_type(
-            config_pitcher[NpbPitcherStats.KEY_FORMAT.format(index=25)]
+        key_bb9, type_bb9 = DataSource.get_column_and_data_type(
+            config_pitcher[PitcherStats.KEY_FORMAT.format(index=25)]
         )
         _stats[key_bb9] = Stats.bb9(row['bb'], _stats['calc_ip'])
 
         # SO/9
-        key_so9, type_so9 = NpbData.get_column_and_data_type(
-            config_pitcher[NpbPitcherStats.KEY_FORMAT.format(index=26)]
+        key_so9, type_so9 = DataSource.get_column_and_data_type(
+            config_pitcher[PitcherStats.KEY_FORMAT.format(index=26)]
         )
         _stats[key_so9] = Stats.so9(row['so'], _stats['calc_ip'])
 
         # HR/9
-        key_hr9, type_hr9 = NpbData.get_column_and_data_type(
-            config_pitcher[NpbPitcherStats.KEY_FORMAT.format(index=27)]
+        key_hr9, type_hr9 = DataSource.get_column_and_data_type(
+            config_pitcher[PitcherStats.KEY_FORMAT.format(index=27)]
         )
         _stats[key_hr9] = Stats.so9(row['hr'], _stats['calc_ip'])
 
@@ -67,6 +67,6 @@ class NpbPitcherStats(NpbData):
 
 
 if __name__ == '__main__':
-    st = NpbPitcherStats()
+    st = PitcherStats(config_file='../config.ini')
     stats = st.get()
-    st.excel(stats, filename=r'npb_pitcher_stats.xlsx')
+    st.excel(stats, filename=r'npb_pitcher_stats.xlsx', output_dir='../output')

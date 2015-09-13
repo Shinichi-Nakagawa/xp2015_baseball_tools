@@ -3,17 +3,17 @@
 
 __author__ = 'Shinichi Nakagawa'
 
-from npb_standings import NpbStandings
-from npb_batter_stats import NpbBatterStats
+from npb.team_standings import TeamStandings
+from npb.batter_stats import BatterStats
 from service.storage import Storage
 
 class Xp2015DataCreate(object):
 
     def __init__(self, config_file='app.ini'):
         self.storage_service = Storage(config_file)
-        self.standing_service = NpbStandings()
+        self.standing_service = TeamStandings()
         self.standings = self.standing_service.get()
-        self.batting_stats_service = NpbBatterStats()
+        self.batting_stats_service = BatterStats()
         self.batting_stats = self.batting_stats_service.get()
 
     def team_standings(self):

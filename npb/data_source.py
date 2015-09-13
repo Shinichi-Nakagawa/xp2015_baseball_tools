@@ -12,7 +12,7 @@ from datetime import datetime as dt
 import time
 from datetime import timezone, timedelta
 
-class NpbData(object):
+class DataSource(object):
     # 出力結果のKey(confing.ini)
     KEY_FORMAT = 'key_{index}'
     DATETIME_FORMAT = '%Y%m%d_%H%M%S'
@@ -23,7 +23,7 @@ class NpbData(object):
         self.output_path = self.config['config']['output_path']
         self.extension = self.config['config']['extension']
         loc = dt.fromtimestamp(time.time(), self._get_timezone())
-        self.now_time = loc.strftime(NpbData.DATETIME_FORMAT)
+        self.now_time = loc.strftime(DataSource.DATETIME_FORMAT)
 
     def _get_timezone(self):
         """
@@ -90,9 +90,9 @@ class NpbData(object):
                 if len(tr.find_all('td')) < column_size:
                     continue
                 for i, td in enumerate(tr.find_all('td')):
-                    key = NpbData.KEY_FORMAT.format(index=i)
-                    column, data_type = NpbData.get_column_and_data_type(self.config[config_path][key])
-                    row[column] = NpbData.get_value(data_type, td.text)
+                    key = DataSource.KEY_FORMAT.format(index=i)
+                    column, data_type = DataSource.get_column_and_data_type(self.config[config_path][key])
+                    row[column] = DataSource.get_value(data_type, td.text)
                 scraping_dict[league].append(self.get_row(row))
         return scraping_dict
 
