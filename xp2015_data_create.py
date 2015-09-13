@@ -3,17 +3,15 @@
 
 __author__ = 'Shinichi Nakagawa'
 
-from npb_standings import NpbStandings
-from npb_batter_stats import NpbBatterStats
-from service.storage import Storage
+from npb.team_standings import TeamStandings
+from npb.batter_stats import BatterStats
 
 class Xp2015DataCreate(object):
 
-    def __init__(self, config_file='app.ini'):
-        self.storage_service = Storage(config_file)
-        self.standing_service = NpbStandings()
+    def __init__(self):
+        self.standing_service = TeamStandings()
         self.standings = self.standing_service.get()
-        self.batting_stats_service = NpbBatterStats()
+        self.batting_stats_service = BatterStats()
         self.batting_stats = self.batting_stats_service.get()
 
     def team_standings(self):
@@ -70,24 +68,12 @@ class Xp2015DataCreate(object):
             ascending=False
         )
 
-    def upload_files(self):
-        """
-        ファイル転送
-        :return:
-        """
-        self.storage_service.upload_files(
-            self.standing_service.output_path,
-            self.standing_service.extension,
-            self.standing_service.now_time
-        )
-
 def main():
     cl = Xp2015DataCreate()
     cl.team_standings()
     cl.team_py_standings()
     cl.ops()
     cl.dunn()
-    cl.upload_files()
 
 if __name__ == '__main__':
     main()

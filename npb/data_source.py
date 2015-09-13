@@ -12,7 +12,7 @@ from datetime import datetime as dt
 import time
 from datetime import timezone, timedelta
 
-class NpbData(object):
+class DataSource(object):
     # 出力結果のKey(confing.ini)
     KEY_FORMAT = 'key_{index}'
     DATETIME_FORMAT = '%Y%m%d_%H%M%S'
@@ -23,7 +23,7 @@ class NpbData(object):
         self.output_path = self.config['config']['output_path']
         self.extension = self.config['config']['extension']
         loc = dt.fromtimestamp(time.time(), self._get_timezone())
-        self.now_time = loc.strftime(NpbData.DATETIME_FORMAT)
+        self.now_time = loc.strftime(DataSource.DATETIME_FORMAT)
 
     def _get_timezone(self):
         """
@@ -35,10 +35,21 @@ class NpbData(object):
             self.config['config']['timezone']
         )
 
-    def get_row(self, row):
+    def get_row(self, row, config_path):
         """
         行データ出力
         :param row: スクレイピングした結果の行データ
+        :param config_path: config上の定義名
+        :return: dict
+        """
+        # サブクラスで実装
+        pass
+
+    def get_baseballdata_row(self, row, config_path):
+        """
+        行データ出力(データで楽しむプロ野球)
+        :param row: スクレイピングした結果の行データ
+        :param config_path: config上の定義名
         :return: dict
         """
         # サブクラスで実装
@@ -68,6 +79,46 @@ class NpbData(object):
 
         return text
 
+    @classmethod
+    def get_player_name_and_team(cls, player_name, team_name):
+        """
+        選手名(チーム名)出力
+        :param player_name: 選手名
+        :param team_name: チーム名
+        :return: player_name(team_name)
+        """
+        return '{name}({team})'.format(name=player_name.replace('　', ''), team=team_name)
+
+    def get_baseballdata(self, config_url, table_class, config_path, column_size):
+        """
+        データで楽しむプロ野球をスクレイピング
+        :param config_url: config上のurl定義名
+        :param table_class: スクレイピングするテーブルのクラス名
+        :param config_path: config上の定義名
+        :param column_size: カラム数
+        :return:
+        """
+        scraping_dict = {
+            'central': [],
+            'pacific': [],
+        }
+        for league in scraping_dict.keys():
+            html = urllib.request.urlopen(self.config[league][config_url])
+            soup = BeautifulSoup(html, 'html.parser')
+            table = soup.find('table', class_=table_class)
+            for tr in table.find_all('tr'):
+                row = OrderedDict()
+                if len(tr.find_all('td')) < column_size:
+                    continue
+                for i, td in enumerate(tr.find_all('td')):
+                    key = DataSource.KEY_FORMAT.format(index=i)
+                    column, data_type = DataSource.get_column_and_data_type(self.config[config_path][key])
+                    row[column] = DataSource.get_value(data_type, td.text.strip())
+                    if len(row) == column_size:
+                        break
+                scraping_dict[league].append(self.get_baseballdata_row(row, config_path))
+        return scraping_dict
+
     def get_yahoo_japan_baseball(self, config_url, table_class, config_path, column_size):
         """
         Yahoo Japan Baseballをスクレイピング
@@ -90,10 +141,10 @@ class NpbData(object):
                 if len(tr.find_all('td')) < column_size:
                     continue
                 for i, td in enumerate(tr.find_all('td')):
-                    key = NpbData.KEY_FORMAT.format(index=i)
-                    column, data_type = NpbData.get_column_and_data_type(self.config[config_path][key])
-                    row[column] = NpbData.get_value(data_type, td.text)
-                scraping_dict[league].append(self.get_row(row))
+                    key = DataSource.KEY_FORMAT.format(index=i)
+                    column, data_type = DataSource.get_column_and_data_type(self.config[config_path][key])
+                    row[column] = DataSource.get_value(data_type, td.text.strip())
+                scraping_dict[league].append(self.get_row(row, config_path))
         return scraping_dict
 
     def excel(self, scraping_dict, filename, columns=None, sort_key='rank', ascending=True, output_dir=None):

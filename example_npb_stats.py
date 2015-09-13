@@ -3,12 +3,12 @@
 
 __author__ = 'Shinichi Nakagawa'
 
-from npb_standings import NpbStandings
-from npb_batter_stats import NpbBatterStats
-from npb_pitcher_stats import NpbPitcherStats
+from npb.team_standings import TeamStandings
+from npb.batter_stats import BatterStats
+from npb.pitcher_stats import PitcherStats
 
 if __name__ == '__main__':
-    st = NpbStandings()
+    st = TeamStandings()
     standings = st.get()
     # ピタゴラス勝率順
     # ピタゴラス勝率,ピタゴラス勝利,ピタゴラス敗北(試合数-ピタゴラス勝利),得点,失点,得失点差
@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     # 打撃成績+セイバーメトリクス
     # 打率,本塁打,打点,出塁率,長打率,OPS,ISO
-    batter = NpbBatterStats()
+    batter = BatterStats()
     stats_batter = batter.get()
     batter.excel(
         stats_batter,
@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     # 投手成績+セイバーメトリクス
     # 防御率,奪三振,勝,負,奪三振率,与四球率,被本塁打率
-    pitcher = NpbPitcherStats()
+    pitcher = PitcherStats()
     stats_pitcher = pitcher.get()
     pitcher.excel(
         stats_pitcher,
