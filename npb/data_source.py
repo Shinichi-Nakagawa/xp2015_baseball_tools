@@ -72,8 +72,6 @@ class DataSource(object):
         :param text: value text
         :return: (data type)text
         """
-        print(text)
-        print(data_type)
         if data_type is 'i':
             return int(text)
         elif data_type is 'f':
@@ -100,11 +98,12 @@ class DataSource(object):
             table = soup.find('table', class_=table_class)
             for tr in table.find_all('tr'):
                 row = OrderedDict()
+                if len(tr.find_all('td')) < column_size:
+                    continue
                 for i, td in enumerate(tr.find_all('td')):
                     key = DataSource.KEY_FORMAT.format(index=i)
                     column, data_type = DataSource.get_column_and_data_type(self.config[config_path][key])
-                    row[column] = DataSource.get_value(data_type, td.text)
-                    print(row[column])
+                    row[column] = DataSource.get_value(data_type, td.text.strip())
                     if len(row) == column_size:
                         break
                 scraping_dict[league].append(self.get_baseballdata_row(row, config_path))
@@ -134,7 +133,7 @@ class DataSource(object):
                 for i, td in enumerate(tr.find_all('td')):
                     key = DataSource.KEY_FORMAT.format(index=i)
                     column, data_type = DataSource.get_column_and_data_type(self.config[config_path][key])
-                    row[column] = DataSource.get_value(data_type, td.text)
+                    row[column] = DataSource.get_value(data_type, td.text.strip())
                 scraping_dict[league].append(self.get_row(row, config_path))
         return scraping_dict
 

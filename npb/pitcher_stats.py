@@ -8,13 +8,14 @@ from baseball.stats import Stats
 
 class PitcherStats(DataSource):
 
-    def _calc_ip(self, ip):
+    def _calc_ip(self, ip, delimiter='\xa0'):
         """
         イニング計算
-        :param ip:
+        :param ip: (str)inning pitched
+        :param delimiter: default=no break space
         :return: (float)ip
         """
-        ips = ip.split('\xa0')
+        ips = ip.split(delimiter)
         if len(ips) == 1:
             return float(ips[0])
         else:
@@ -37,9 +38,9 @@ class PitcherStats(DataSource):
         _stats = row
         # イニングを計算し直す(分数表記から小数表記に)
         key_ip, type_ip = DataSource.get_column_and_data_type(
-            config_pitcher[PitcherStats.KEY_FORMAT.format(index=34)]
+            config_pitcher[PitcherStats.KEY_FORMAT.format(index=35)]
         )
-        _stats[key_ip] = self._calc_ip(row['ip'])
+        _stats[key_ip] = self._calc_ip(row['ip'],delimiter=' ')
         return _stats
 
     def get_row(self, row, config_path):
@@ -96,7 +97,7 @@ class PitcherStats(DataSource):
         return : dict
         :return:
         """
-        return super(PitcherStats, self).get_baseballdata('stats_pitcher_baseballdata_url', 'responsive', 'pitcher_baseballdata', 34)
+        return super(PitcherStats, self).get_baseballdata('stats_pitcher_baseballdata_url', 'responsive', 'pitcher_baseballdata', 35)
 
 
 if __name__ == '__main__':
