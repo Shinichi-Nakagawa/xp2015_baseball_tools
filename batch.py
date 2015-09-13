@@ -11,7 +11,7 @@ from strage_uploader import StorageUploader
 from scheduler.job_controller import JobController
 
 
-@JobController.run("10 22 * * *")
+@JobController.run("00 22 * * *")
 def baseballdata_create():
     """
     データで楽しむプロ野球からデータ出力

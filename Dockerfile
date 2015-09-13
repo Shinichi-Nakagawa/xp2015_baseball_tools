@@ -10,8 +10,10 @@ WORKDIR /app
 ADD requirements.txt /app/
 RUN pip install -r requirements.txt
 RUN mkdir /app/output
-ADD ./baseball /app/baseball/
 ADD ./service /app/service/
+ADD ./scheduler /app/scheduler/
+ADD ./baseball /app/baseball/
+ADD ./npb /app/npb/
 ADD *.py /app/
 ADD app.ini /app/
 ADD config.ini /app/
