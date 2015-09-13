@@ -23,13 +23,14 @@ class TeamStandings(DataSource):
         ra_power = ra ** TeamStandings.PYTHAGORIAN_POWER
         return round(r_power / (r_power + ra_power), 3)
 
-    def get_row(self, row):
+    def get_row(self, row, config_path):
         """
         行データ出力
         :param row: スクレイピングした結果の行データ
+        :param config_path: config上の定義名
         :return: dict
         """
-        config_standings = self.config['standings']
+        config_standings = self.config[config_path]
         team_stats = row
         # 順位を書き換え('位'を抜く)
         key_rank, type_rank = DataSource.get_column_and_data_type(

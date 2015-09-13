@@ -8,13 +8,14 @@ from baseball.stats import Stats
 
 class BatterStats(DataSource):
 
-    def get_row(self, row):
+    def get_row(self, row, config_path):
         """
         行データ出力
         :param row: スクレイピングした結果の行データ
+        :param config_path: config上の定義名
         :return: dict
         """
-        config_batter = self.config['batter']
+        config_batter = self.config[config_path]
         _stats = row
         # OPS
         key_ops, type_ops = DataSource.get_column_and_data_type(
