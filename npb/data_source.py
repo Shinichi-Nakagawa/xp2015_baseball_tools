@@ -79,6 +79,16 @@ class DataSource(object):
 
         return text
 
+    @classmethod
+    def get_player_name_and_team(cls, player_name, team_name):
+        """
+        選手名(チーム名)出力
+        :param player_name: 選手名
+        :param team_name: チーム名
+        :return: player_name(team_name)
+        """
+        return '{name}({team})'.format(name=player_name.replace('　', ''), team=team_name)
+
     def get_baseballdata(self, config_url, table_class, config_path, column_size):
         """
         データで楽しむプロ野球をスクレイピング

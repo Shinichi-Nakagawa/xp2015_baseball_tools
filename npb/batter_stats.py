@@ -33,7 +33,7 @@ class BatterStats(DataSource):
         key_name, type_name = DataSource.get_column_and_data_type(
             config_batter[BatterStats.KEY_FORMAT.format(index=27)]
         )
-        _stats[key_name] = '{name}({team})'.format(name=row['name'].replace('　', ''), team=row['team'])
+        _stats[key_name] = DataSource.get_player_name_and_team(row['name'], row['team'])
 
         # iso
         key_iso, type_iso = DataSource.get_column_and_data_type(

@@ -36,11 +36,34 @@ class PitcherStats(DataSource):
         """
         config_pitcher = self.config[config_path]
         _stats = row
+
+        # 名前と順位を分割
+        rank, name = row['name'].split(':')
+        _stats['name'] = name
         # イニングを計算し直す(分数表記から小数表記に)
         key_ip, type_ip = DataSource.get_column_and_data_type(
             config_pitcher[PitcherStats.KEY_FORMAT.format(index=35)]
         )
         _stats[key_ip] = self._calc_ip(row['ip'],delimiter=' ')
+
+        # 選手名(チーム名)
+        key_name, type_name = DataSource.get_column_and_data_type(
+            config_pitcher[PitcherStats.KEY_FORMAT.format(index=36)]
+        )
+        _stats[key_name] = DataSource.get_player_name_and_team(name, row['team'])
+
+        # 被アダム・ダン率
+        key_dunn, type_dunn = DataSource.get_column_and_data_type(
+            config_pitcher[PitcherStats.KEY_FORMAT.format(index=37)]
+        )
+        _stats[key_dunn] = Stats.adam_dunn_pitcher(row['hr'], row['bb'], row['hbp'], row['so'], row['bf'])
+
+        # 順位
+        key_rank, type_rank = DataSource.get_column_and_data_type(
+            config_pitcher[PitcherStats.KEY_FORMAT.format(index=38)]
+        )
+        _stats[key_rank] = int(rank)
+
         return _stats
 
     def get_row(self, row, config_path):
@@ -62,7 +85,7 @@ class PitcherStats(DataSource):
         key_name, type_name = DataSource.get_column_and_data_type(
             config_pitcher[PitcherStats.KEY_FORMAT.format(index=24)]
         )
-        _stats[key_name] = '{name}({team})'.format(name=row['name'].replace('　', ''), team=row['team'])
+        _stats[key_name] = DataSource.get_player_name_and_team(row['name'], row['team'])
 
         # BB/9
         key_bb9, type_bb9 = DataSource.get_column_and_data_type(
