@@ -9,7 +9,7 @@ from xp2015_data_create import Xp2015DataCreate
 from scheduler.job_controller import JobController
 
 
-@JobController.run("17 01 * * *")
+@JobController.run("00 22 * * *")
 def xp2015_data_create():
     """
     XP祭り2015用データ作成
