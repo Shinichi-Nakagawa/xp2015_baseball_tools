@@ -6,6 +6,7 @@ __author__ = 'Shinichi Nakagawa'
 from configparser import ConfigParser
 from boto3.session import Session
 import glob
+import os
 
 class Storage(object):
 
@@ -26,13 +27,14 @@ class Storage(object):
         self.s3client = self.session.client('s3')
         self.bucket_name = self.config['baseball_report']['bucket_name']
 
-    def upload_files(self, dir_path, extension, key_name, delimiter='/'):
+    def upload_files(self, dir_path, extension, key_name, delimiter='/', delete=True):
         """
         file upload for S3
         :param dir_path: input_file_path
         :param extension: upload file extension
         :param key_name: bucket key name
         :param delimiter: Delimiter
+        :param delete: Delete Flg
         :return: None
         """
         for file_name in glob.glob(delimiter.join([dir_path, '*{extension}'.format(extension=extension)])):
@@ -43,3 +45,5 @@ class Storage(object):
                 ]
             )
             self.s3client.upload_file(file_name, self.bucket_name, remote_file_name)
+            if delete:
+                os.remove(file_name)

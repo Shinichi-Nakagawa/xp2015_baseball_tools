@@ -116,7 +116,7 @@ class PitcherStats(DataSource):
 
     def get_baseballdata(self, ):
         """
-        投手成績を取得して吐き出す(baseballdata
+        投手成績を取得して吐き出す(baseballdata)
         return : dict
         :return:
         """
