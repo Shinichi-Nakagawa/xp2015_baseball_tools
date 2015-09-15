@@ -1,6 +1,6 @@
 # No Ball Django application server
 
-FROM python:3.4.3-wheezy
+FROM python:3.5.0
 
 MAINTAINER Shinichi Nakagawa <spirits.is.my.rader@gmail.com>
 
