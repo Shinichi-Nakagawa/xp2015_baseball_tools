@@ -36,7 +36,11 @@ class TeamStandings(DataSource):
         key_rank, type_rank = DataSource.get_column_and_data_type(
             config_standings[TeamStandings.KEY_FORMAT.format(index=0)]
         )
-        team_stats[key_rank] = DataSource.get_value(type_rank, row[key_rank].replace('位', ''))
+        team_stats[key_rank] = DataSource.get_value(
+            type_rank,
+            row[key_rank].replace('位', ''),
+            key_rank
+        )
 
         # ピタゴラス勝率を追加
         key_py_ex, type_py_ex = DataSource.get_column_and_data_type(
@@ -48,7 +52,11 @@ class TeamStandings(DataSource):
         key_py_win, type_py_win = DataSource.get_column_and_data_type(
             config_standings[TeamStandings.KEY_FORMAT.format(index=16)]
         )
-        team_stats[key_py_win] = DataSource.get_value(type_py_win, round(float(row['game']) * team_stats[key_py_ex], 0))
+        team_stats[key_py_win] = DataSource.get_value(
+            type_py_win,
+            round(float(row['game']) * team_stats[key_py_ex], 0),
+            key_rank
+        )
 
         # ピタゴラス敗戦数
         key_py_lose, type_py_lose = DataSource.get_column_and_data_type(

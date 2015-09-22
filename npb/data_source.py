@@ -65,18 +65,21 @@ class DataSource(object):
         return config_value.split(',')
 
     @classmethod
-    def get_value(cls, data_type, text):
+    def get_value(cls, data_type, text, column):
         """
         データ型に合わせて置換
         :param data_type: data type
         :param text: value text
+        :param column: Column name
         :return: (data type)text
         """
         if data_type is 'i':
             return int(text)
         elif data_type is 'f':
+            # 打率もしくは防御率は'-'があり得る
+            if column in ('ba', 'era') and text == '-':
+                return text
             return float(text)
-
         return text
 
     @classmethod
@@ -113,7 +116,7 @@ class DataSource(object):
                 for i, td in enumerate(tr.find_all('td')):
                     key = DataSource.KEY_FORMAT.format(index=i)
                     column, data_type = DataSource.get_column_and_data_type(self.config[config_path][key])
-                    row[column] = DataSource.get_value(data_type, td.text.strip())
+                    row[column] = DataSource.get_value(data_type, td.text.strip(), column)
                     if len(row) == column_size:
                         break
                 scraping_dict[league].append(self.get_baseballdata_row(row, config_path))
@@ -143,7 +146,7 @@ class DataSource(object):
                 for i, td in enumerate(tr.find_all('td')):
                     key = DataSource.KEY_FORMAT.format(index=i)
                     column, data_type = DataSource.get_column_and_data_type(self.config[config_path][key])
-                    row[column] = DataSource.get_value(data_type, td.text.strip())
+                    row[column] = DataSource.get_value(data_type, td.text.strip(), column)
                 scraping_dict[league].append(self.get_row(row, config_path))
         return scraping_dict
 
