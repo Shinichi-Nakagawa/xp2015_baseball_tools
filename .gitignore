@@ -69,3 +69,4 @@ target/
 
 # configuration
 app.ini
+/config/database.ini

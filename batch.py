@@ -27,7 +27,7 @@ def baseballdata_create():
     uploader.upload_files(
         cl.pitching_stats_service.output_path,
         cl.pitching_stats_service.extension,
-        cl.pitching_stats_service.now_time
+        cl.pitching_stats_service.str_now_time
     )
     logging.info("-<- データで楽しむプロ野球 Upload Done.")
 
@@ -50,7 +50,7 @@ def xp2015_data_create():
     uploader.upload_files(
         cl.standing_service.output_path,
         cl.standing_service.extension,
-        cl.standing_service.now_time
+        cl.standing_service.str_now_time
     )
     logging.info("-<- XP2015 Data Upload Done.")
 

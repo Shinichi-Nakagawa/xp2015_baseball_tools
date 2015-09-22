@@ -22,8 +22,8 @@ class DataSource(object):
         self.config.read(config_file)
         self.output_path = self.config['config']['output_path']
         self.extension = self.config['config']['extension']
-        loc = dt.fromtimestamp(time.time(), self._get_timezone())
-        self.now_time = loc.strftime(DataSource.DATETIME_FORMAT)
+        self.now_time = dt.fromtimestamp(time.time(), self._get_timezone())
+        self.str_now_time = self.now_time.strftime(DataSource.DATETIME_FORMAT)
 
     def _get_timezone(self):
         """
@@ -104,7 +104,7 @@ class DataSource(object):
         }
         for league in scraping_dict.keys():
             html = urllib.request.urlopen(self.config[league][config_url])
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(html, 'html.parser',)
             table = soup.find('table', class_=table_class)
             for tr in table.find_all('tr'):
                 row = OrderedDict()
