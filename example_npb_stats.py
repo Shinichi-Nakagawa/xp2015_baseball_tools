@@ -8,7 +8,8 @@ from npb.batter_stats import BatterStats
 from npb.pitcher_stats import PitcherStats
 
 if __name__ == '__main__':
-    st = TeamStandings()
+    config_file = './config/config.ini'
+    st = TeamStandings(config_file=config_file)
     standings = st.get()
     # ピタゴラス勝率順
     # ピタゴラス勝率,ピタゴラス勝利,ピタゴラス敗北(試合数-ピタゴラス勝利),得点,失点,得失点差
@@ -22,7 +23,7 @@ if __name__ == '__main__':
 
     # 打撃成績+セイバーメトリクス
     # 打率,本塁打,打点,出塁率,長打率,OPS,ISO
-    batter = BatterStats()
+    batter = BatterStats(config_file=config_file)
     stats_batter = batter.get()
     batter.excel(
         stats_batter,
@@ -34,7 +35,7 @@ if __name__ == '__main__':
 
     # 投手成績+セイバーメトリクス
     # 防御率,奪三振,勝,負,奪三振率,与四球率,被本塁打率
-    pitcher = PitcherStats()
+    pitcher = PitcherStats(config_file=config_file)
     stats_pitcher = pitcher.get()
     pitcher.excel(
         stats_pitcher,

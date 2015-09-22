@@ -80,6 +80,6 @@ class TeamStandings(DataSource):
 
 
 if __name__ == '__main__':
-    st = TeamStandings(config_file='../config.ini')
+    st = TeamStandings(config_file='../config/config.ini')
     standings = st.get()
     st.excel(standings, filename=r'npb_standings.xlsx', output_dir='../output')

@@ -120,11 +120,16 @@ class PitcherStats(DataSource):
         return : dict
         :return:
         """
-        return super(PitcherStats, self).get_baseballdata('stats_pitcher_baseballdata_url', 'responsive', 'pitcher_baseballdata', 35)
+        return super(PitcherStats, self).get_baseballdata(
+            'stats_pitcher_baseballdata_url',
+            'responsive',
+            'pitcher_baseballdata',
+            35
+        )
 
 
 if __name__ == '__main__':
-    st = PitcherStats(config_file='../config.ini')
+    st = PitcherStats(config_file='../config/config.ini')
     stats = st.get()
     stats2 = st.get_baseballdata()
     st.excel(stats, filename=r'npb_pitcher_stats.xlsx', output_dir='../output')

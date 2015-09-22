@@ -17,7 +17,7 @@ class DataSource(object):
     KEY_FORMAT = 'key_{index}'
     DATETIME_FORMAT = '%Y%m%d_%H%M%S'
 
-    def __init__(self, config_file='config.ini'):
+    def __init__(self, config_file='../config/config.ini'):
         self.config = ConfigParser()
         self.config.read(config_file)
         self.output_path = self.config['config']['output_path']

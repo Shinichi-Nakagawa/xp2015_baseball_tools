@@ -13,15 +13,16 @@ from datetime import datetime
 
 class NpbDataCreate(object):
 
-    def __init__(self, config_file="./config/database.ini"):
-        self.database = Database(config_file=config_file)
+    def __init__(self, database_config_file="./config/database.ini", config_file='./config/config.ini'):
+        self.database = Database(config_file=database_config_file)
         self.yahoo = Yahoo(datetime.now())
         self.yahoo.table(self.database.metadata)
         self.database.mapping(self.yahoo.table_class_list())
         self.database.create_table()
+        self.config_file = config_file
 
     def create_team_standings(self):
-        service = TeamStandings()
+        service = TeamStandings(config_file=self.config_file)
         values = []
         for league, stats in service.get().items():
             for team_stats in stats:
@@ -36,7 +37,7 @@ class NpbDataCreate(object):
         self.add_all(values)
 
     def create_player_standings(self, service_class, player_class):
-        service = service_class()
+        service = service_class(config_file=self.config_file)
         values = []
         for league, stats in service.get().items():
             for team_stats in stats:
@@ -57,7 +58,6 @@ class NpbDataCreate(object):
         :return:
         """
         try:
-            [self.database.session.delete(value) for value in values]
             self.database.session.add_all(values)
         except:
             self.database.session.rollback()

@@ -58,6 +58,6 @@ class BatterStats(DataSource):
 
 
 if __name__ == '__main__':
-    st = BatterStats('../config.ini')
+    st = BatterStats('../config/config.ini')
     stats = st.get()
     st.excel(stats, filename=r'npb_batter_stats.xlsx', output_dir='../output')

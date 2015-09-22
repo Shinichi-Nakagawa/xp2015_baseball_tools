@@ -68,5 +68,5 @@ target/
 *.xls*
 
 # configuration
-app.ini
+config/app.ini
 /config/database.ini

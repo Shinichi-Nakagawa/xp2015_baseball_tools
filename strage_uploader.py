@@ -7,7 +7,7 @@ from service.storage import Storage
 
 class StorageUploader(object):
 
-    def __init__(self, config_file='app.ini'):
+    def __init__(self, config_file='./config/app.ini'):
         self.storage_service = Storage(config_file)
 
     def upload_files(self, input_dir, extension, now_time):

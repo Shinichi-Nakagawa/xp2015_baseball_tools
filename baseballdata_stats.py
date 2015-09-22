@@ -7,8 +7,8 @@ from npb.pitcher_stats import PitcherStats
 
 class BaseballdataStats(object):
 
-    def __init__(self):
-        self.pitching_stats_service = PitcherStats()
+    def __init__(self, config_file='./config/config.ini'):
+        self.pitching_stats_service = PitcherStats(config_file=config_file)
         self.pitching_stats_data = self.pitching_stats_service.get_baseballdata()
 
     def dunn(self):

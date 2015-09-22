@@ -19,7 +19,7 @@ def baseballdata_create():
     """
     logging.info("->- データで楽しむプロ野球 Create Start")
     # 実行モジュール
-    cl = BaseballdataStats()
+    cl = BaseballdataStats(config_file='./config/config.ini')
     uploader = StorageUploader()
     cl.dunn()
     logging.info("-<- データで楽しむプロ野球 Create Done.")
@@ -39,7 +39,7 @@ def xp2015_data_create():
     """
     logging.info("->- XP2015 Data Create Start")
     # 実行モジュール
-    cl = Xp2015DataCreate()
+    cl = Xp2015DataCreate('./config/config.ini')
     uploader = StorageUploader()
     cl.team_standings()
     cl.team_py_standings()

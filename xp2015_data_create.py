@@ -8,10 +8,10 @@ from npb.batter_stats import BatterStats
 
 class Xp2015DataCreate(object):
 
-    def __init__(self):
-        self.standing_service = TeamStandings()
+    def __init__(self, config_file='./config/config.ini'):
+        self.standing_service = TeamStandings(config_file=config_file)
         self.standings = self.standing_service.get()
-        self.batting_stats_service = BatterStats()
+        self.batting_stats_service = BatterStats(config_file=config_file)
         self.batting_stats = self.batting_stats_service.get()
 
     def team_standings(self):
