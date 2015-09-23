@@ -14,6 +14,5 @@ ADD ./service /app/service/
 ADD ./scheduler /app/scheduler/
 ADD ./baseball /app/baseball/
 ADD ./npb /app/npb/
+ADD ./config /app/config/
 ADD *.py /app/
-ADD app.ini /app/
-ADD config.ini /app/
